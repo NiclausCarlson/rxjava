@@ -3,30 +3,42 @@ package org.example.logic;
 import org.example.model.Currency;
 
 public class CurrencyConverter {
-    private double rubCoeff = 1;
-    private double usdCoeff = 0.8;
-    private double euroCoeff = 0.5;
+    private static double rubCoeff = 1;
+    private static double usdCoeff = 0.8;
+    private static double euroCoeff = 0.5;
 
     public CurrencyConverter(double rubCoeff, double usdCoeff, double euroCoeff) {
-        this.rubCoeff = rubCoeff;
-        this.usdCoeff = usdCoeff;
-        this.euroCoeff = euroCoeff;
+        CurrencyConverter.rubCoeff = rubCoeff;
+        CurrencyConverter.usdCoeff = usdCoeff;
+        CurrencyConverter.euroCoeff = euroCoeff;
     }
 
-    public double convert(Currency from, Currency to, double val) {
-        if (from.equals(to)) {
+    public static double convertFromRub(Currency to, double val){
+        if (to == Currency.RUB) {
             return val;
         }
-        return convert(to, convert(Currency.RUB, val));
+        if (to == Currency.DOLLAR) {
+            return val*usdCoeff;
+        }
+        return val *euroCoeff;
+    }
+    public static double convertToRub(Currency from, double val) {
+        if (from == Currency.RUB) {
+            return val;
+        }
+        if (from == Currency.DOLLAR) {
+            return val / usdCoeff;
+        }
+        return val / euroCoeff;
     }
 
-    private double convert(Currency to, double val) {
-        if (to == Currency.DOLLAR) {
-            return val * usdCoeff;
+    public static String getCurrencySign(Currency currency){
+        if(currency == Currency.RUB){
+            return "rub";
         }
-        if (to == Currency.RUB) {
-            return val * rubCoeff;
+        if (currency == Currency.DOLLAR){
+            return "usd";
         }
-        return val * euroCoeff;
+        return "eur";
     }
 }
